@@ -4,4 +4,4 @@ background.loop = true;
 background.play();
 setTimeout(() => {
     window.location.assign('../construct/');
-}, 3000);
+}, 1000);
