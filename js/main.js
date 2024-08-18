@@ -1,3 +1,7 @@
+//唉...............
 let background = new Audio("../background_music.mp3");
+background.loop = true;
 background.play();
-//window.location.assign('../construct/');
+setTimeout(() => {
+    window.location.assign('../construct/');
+}, 3000);
