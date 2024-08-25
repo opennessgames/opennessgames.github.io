@@ -10,7 +10,7 @@ function counting() {
 		minutes = document.getElementById('minutes'),
 		seconds = document.getElementById('seconds'),
 		timeNow = new Date().getTime(),
-		setDate = new Date('01/01/2024').getTime(),
+		setDate = new Date('2024-9-1').getTime(),
 		diff = setDate - timeNow;
 
 	days.innerText = Math.floor(diff / d);
@@ -18,7 +18,7 @@ function counting() {
 	minutes.innerText = Math.floor((diff % h) / m);
 	seconds.innerText = Math.floor((diff % m) / s);
 	// console.log(Math.floor(diff / (d * 365)));
-    console.log(diff);
+	console.log(diff);
 }
 setInterval(() => {
 	counting();
