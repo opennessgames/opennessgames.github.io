@@ -1,0 +1,121 @@
+/* 
+By : yzx
+Time : 2024年8月26日 下午 09:11:14 
+*/
+/* 设置主站字体样式 */
+@font-face {
+    font-family: 'TenThousandWifi'; /* 定义字体名称 */
+    src: url('../fonts/font0.ttf') format('truetype'); /* 字体文件路径 */
+}
+
+* {
+    font-family: 'TenThousandWifi', sans-serif; /* 应用自定义字体 */
+}
+
+/* 
+死妈闫仔豪我草你妈,没有爱慕的东西
+老子就看你不爽,怎么滴了,隔着屏幕打我呀,傻逼 
+*/
+body {
+    width: 100%;
+    height: 100%;
+}
+
+*{
+    /* 清除所有标签的初始内外边距 */
+    padding: 0;
+    margin: 0;
+}
+
+.TopMenu{
+    background-color: deepskyblue; /* 颜色 */
+    background-repeat: no-repeat; /* 不重复背景图像 */
+    background-size: cover; /* 背景图像覆盖整个元素 */
+    background-image: url("../img/TopBg.png");/* 背景 */
+    height: 140px; /* 高 */
+    width: 100%; /* 宽 */
+    line-height: 80px; /* 行高 */
+    position: absolute; /* 绝对定位 */
+    top: 0px; /* 距离顶部0px */
+    left: 0;
+}
+
+.TopMenu li{
+    float: left;/* 浮动 */
+    width: 250px; /* 一个li标签宽度是75px */  
+    text-align: center; /* 文本局中 */
+}
+
+.ul_top{
+    list-style: none; /* 去掉小黑点 */
+    position: absolute;
+    top: 100px;
+    left: 60px;
+}
+
+.TopMenu a{
+    display: block; /* 块状显示 */
+    color: white; /* 白色字体 */
+    font-size: 30px; /* 字体大小 */
+    text-decoration: none;/* 去掉下划线 */
+    width: 250px; /* 每个宽是80px */
+    line-height: 30px; /* 行高30px */
+}
+
+.TopMenu a:hover{
+    color: white; /* 鼠标悬浮时是白色 */
+    background: green; /* 背景为你头发上的颜色 */
+}
+/* 
+闫仔豪我肏你全家,
+没有妈的东西
+*/
+/* 产品二级菜单 */
+.ProductMenu {
+    display: none; /* 默认不显示 */
+    position: absolute; /* 绝对定位 */
+    top: 100%; /* 下方对齐 */
+    left: 0; /* 左对齐 */
+    background-color: deepskyblue; /* 背景颜色 */
+    width: 250px; /* 宽度 */
+    list-style: none; /* 去掉小黑点 */
+    padding: 0;
+    margin: 0;
+    z-index: 1; /* 确保二级菜单在上层 */
+    transform: translateX(100%); /* 调整菜单位置 */
+}
+
+.ProductMenu li a {
+    color: white; /* 字体颜色 */
+    padding: 0; /* 内边距 */
+    font-size: 25px; /* 字体大小 */
+    text-align: center; /* 文本居中 */
+    display: block; /* 块状显示 */
+    text-decoration: none; /* 去掉下划线 */
+}
+
+/* 显示二级菜单 */
+.TopMenu ul li:hover .ProductMenu {
+    display: block; /* 鼠标悬浮时显示二级菜单 */
+}
+
+/* 页脚 */
+
+.BottomBar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    font-size: 30px;
+    background-color: #f1f1f1; /* 背景色 */
+    text-align: center;
+    padding: 10px 0;
+    border-top: 1px solid #ddd; /* 可选的边框样式 */
+}
+
+/* 核心内容 */
+.Main {
+    font-size: 30px;
+    position: relative;
+    top: 140px; /* 顶部距140px */
+}
