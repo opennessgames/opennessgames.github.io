@@ -1,12 +1,26 @@
+<!--
+ * @Author: xixi_
+ * @Date: 2024-08-18 14:06:26
+ * @LastEditors: xixi_
+ * @LastEditTime: 2024-11-06 20:21:23
+ * @FilePath: /opennessgames.github.io/xiningyouxiduan/index.html
+ * Copyright (c) 2020-2024 by xixi_ , All Rights Reserved. 
+-->
+<!--
+	FileName : index.html
+	By : yzx
+	MakeTime : 2023年9月3日 下午 12:34:06
+	Copyright (C) 2024-2025 openGames 
+-->
 <!DOCTYPE html>
 <html>
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="keywords" content="万祯官网, 熙柠游戏, 熙柠游戏端, 小游戏，在线游戏，万祯">
+	<meta name="keywords" content="万祯官网,熙柠游戏,熙柠游戏端,,万祯小游戏,万祯在线游戏,小游戏,在线游戏,万祯,openGames">
 	<meta name="description" content=" ">
-	<title>熙柠游戏端停服</title>
+	<title>熙柠游戏端服务恢复通知</title>
 	<link rel="icon" href="ico/favicon.ico" type="image/x-icon">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,35 +31,37 @@
 			background-color: #f2f2f2;
 			font-family: Arial, sans-serif;
 			font-size: 16px;
-			line-height: 1.5;
+			line-height: 1.6;
 			color: #333;
 		}
 
 		.container {
 			max-width: 800px;
-			margin: 0 auto;
+			margin: 15% auto;
 			padding: 40px;
-			background-color: #fff;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-			text-align: center;
-
+			background-color: #ffffff;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			border-radius: 8px;
+			text-align: left;
 			position: relative;
 		}
 
-
 		h1 {
 			margin-top: 0;
-			font-size: 32px;
+			font-size: 28px;
+			color: #007bff;
 		}
 
 		p {
-			margin-bottom: 20px;
+			margin: 15px 0;
 			font-size: 18px;
+			line-height: 1.2;
 		}
 
 		a {
 			color: #007bff;
 			text-decoration: none;
+			font-weight: bold;
 		}
 
 		a:hover {
@@ -65,31 +81,39 @@
 			bottom: 0;
 			right: 0;
 			width: 200px;
-			height: 100px;
+			height: auto;
+			text-align: left;
+			font-size: 14px;
+			color: #666;
 		}
 	</style>
 </head>
 
+<!--
+	真的,从2020做到2023,做这个实在太难了,下架吧,也就这样了
+	熬夜改代码真的太难受了!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-->
+
 <body>
-	<script src="js/main.js"></script>
 	<div class="container">
-		<h1>停服通知</h1>
+		<h1>熙柠游戏端服务恢复通知</h1>
 		<p>尊敬的用户：</p>
-		<p>经过慎重考虑，我们决定停止熙柠游戏端的运营。感谢您一直以来对我们这3年的支持和信任。</p>
-		<p>如有需要，请联系我们的邮箱：jisanduo@outlook.com。</p>
-		<p>再次感谢您的使用，祝您生活愉快！</p>
+		<p>感谢您一直以来的支持与耐心！自<strong>2023年9月1日 11:45:14</strong>起暂停服务以来，我们经过深思熟虑，决定恢复服务。我们已于<strong>2024年11月6日
+				19:01:36</strong>启动恢复工作。在此期间，熙柠游戏端将暂时无法使用，直至网站维护工作完成。</p>
+		<p>我们深知给您带来的不便，感激您的理解与支持。如有任何疑问或问题，欢迎随时联系我们。</p>
+		<p>祝您生活愉快，感谢您的支持！</p>
 		<div class="time">
 			<p>万祯公司</p>
-			<p>2023-9-1 11:45:14</p>
+			<p>2024/11/06 19:07:17</p>
 		</div>
-		<p><a href="#">返回首页</a></p>
+		<p><a href="../">返回首页</a></p>
 	</div>
 
 	<div class="company-info">
 		<p>万祯公司 - 版权所有</p>
 		<p id="current-time"></p>
 	</div>
-
+	<script src="./js/main.js"></script>
 	<script>
 		function getCurrentTime() {
 			var date = new Date();
@@ -102,12 +126,9 @@
 			seconds = (seconds < 10 ? "0" : "") + seconds;
 
 			var timeString = hours + ":" + minutes + ":" + seconds;
-
 			document.getElementById("current-time").textContent = "当前时间：" + timeString;
-
 			setTimeout(getCurrentTime, 1000); // 每秒钟更新一次时间
 		}
-
 		getCurrentTime();
 	</script>
 </body>
