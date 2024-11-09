@@ -1,0 +1,21 @@
+body {
+    margin: 0px;
+    padding: 1%;
+}
+
+/* 主样式 */
+.main{
+    width: 90%;
+    margin: 0 auto;
+}
+
+/* 标题 */
+.Title {
+    color: #007bff;
+}
+
+
+.fuckYanZiHao h3{
+    color: red;
+    font-size: 25px;
+}
