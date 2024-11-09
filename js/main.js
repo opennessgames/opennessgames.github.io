@@ -4,7 +4,7 @@
 */
 //播放背景音乐
 function PlayMusic() {
-    var TenThousandBgMusic = new Audio("../audio/bg.mp3");//太棒啦,我有对象了
+    var TenThousandBgMusic = new Audio("../audio/bg2.mp3");//太棒啦,我有对象了
     TenThousandBgMusic.loop = true;//循环播放
     TenThousandBgMusic.play();
 }
