@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>HTMLifier</title>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Converts a Scratch project to HTML/JavaScript" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- no-offline -->
+  <link rel="stylesheet" type="text/css" href="../../sheep3.css" />
+  <script src="../../sheep3.js" charset="utf-8"></script>
+  <!-- /no-offline -->
+  <link href="https://fonts.googleapis.com/css2?family=Exo:wght@500&family=Roboto:wght@300&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="./main.css" />
+  <script type="text/javascript">
+    window.errors = []
+    if (window.addEventListener) {
+      window.addEventListener(
+        'error',
+        function (e) {
+          if (e.message) {
+            if (e.error && e.error.stack) {
+              if (e.message.indexOf('Uncaught SyntaxError') === 0) {
+                window.errors.push(
+                  e.message +
+                  ' at ' +
+                  e.filename +
+                  ':' +
+                  e.lineno +
+                  ':' +
+                  e.colno
+                )
+              } else {
+                window.errors.push(e.error.stack)
+              }
+              if (window.onNewError) window.onNewError()
+            }
+          } else {
+            window.errors.push(
+              'Problem loading ' + (e.target.src || e.target.href)
+            )
+            if (window.onNewError) window.onNewError()
+          }
+          window.onerror = null
+        },
+        true
+      ) // true so that errors bubble up to window
+      window.addEventListener(
+        'unhandledrejection',
+        function (e) {
+          window.errors.push(
+            e.reason && (e.reason.stack || e.reason.message || e.reason)
+          )
+          if (window.onNewError) window.onNewError()
+        },
+        false
+      )
+    }
+    window.onerror = function (message, source, lineno, colno, error) {
+      if (colno) {
+        lineno += ':' + colno
+      }
+      if (error && error.stack) {
+        window.errors.push(error.stack)
+      } else {
+        window.errors.push(message + ' at ' + source + ':' + lineno)
+      }
+      if (window.onNewError) window.onNewError()
+    }
+  </script>
+  <style>
+    @font-face {
+      font-family: "CustomFont";
+      /* 自定义字体名称 */
+      src: url("path/to/font.ttf") format("truetype");
+      /* 字体文件路径 */
+    }
+
+    * {
+      font-family: "CustomFont", Arial, sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <textarea id="errors" readonly placeholder="I have not logged any errors."></textarea>
+  <div class="header">
+    <h1>Project HTMLifier</h1>
+    <h3><em>将Scratch项目转换为HTML</em></h3>
+    <button class="htmlify" id="other-htmlify-btn" form="options" type="submit">
+      <div>快速转换</div>
+    </button>
+  </div>
+  <div class="mainarea">
+    <p>
+      这将您的Scratch项目打包到一个可以运行的HTML文件中在网络浏览器中独立运行。HTML文件将非常大，因为它包含整个Scratch引擎（2.6 MB）以及服装和声音项目中使用的文件。
+    </p>
+    <div class="notice info">
+      <p>
+        注意: <strong><a href="https://packager.turbowarp.org/">TurboWarp Packager</a></strong>具有更好的性能，可以生成.exe文件。请参考<a
+          href="#see-also">另请参阅</a>部分以获取更多替代方法。
+      </p>
+    </div>
+    <div id="root">
+      <noscript>
+        <div class="notice start-warning">
+          <p>
+            请启用JavaScript。仅使用HTML和CSS无法完成项目转换。
+          </p>
+        </div>
+      </noscript>
+      <div class="notice start-warning hidden" id="js-enabled">
+        <p>
+          如果您看到此消息，请检查HTMLifier的加载<a href="#errors">是否存在任何问题</a>。请确保您使用的是现代浏览器。
+        </p>
+        <p class="hidden" id="no-nullish-coalescing">
+          您的浏览器不支持现代JavaScript特性；请检查确保<a
+            href="https://caniuse.com/mdn-javascript_operators_nullish_coalescing">您的浏览器是现代的</a>。
+        </p>
+      </div>
+    </div>
+    <p>
+      如果您想查看或编辑HTML文件，可以使用专门的<a
+        href="https://sheeptester.github.io/words-go-here/htmlifier/large-file-editor/">大文件编辑器</a>来隐藏可能会导致普通文本编辑器卡顿或崩溃的长行。
+    </p>
+    <h2 id="updates">更新历史</h2>
+    <p>
+      在<a href="https://github.com/SheepTester/htmlifier/">Github</a>上查看代码和先前版本。
+    </p>
+    <h3>
+      2021-08-12 (<a
+        href="https://github.com/SheepTester/htmlifier/releases/download/v1.0.2/htmlifier-offline.html">下载</a>)
+    </h3>
+    <ul>
+      <li>修复连接到云服务器的问题。</li>
+    </ul>
+    <h3>
+      2021-08-09 (<a
+        href="https://github.com/SheepTester/htmlifier/releases/download/v1.0.1/htmlifier-offline.html">下载</a>)
+    </h3>
+    <ul>
+      <li>修复了角色拖动的问题。</li>
+    </ul>
+    <h3>
+      2021-08-08 (<a
+        href="https://github.com/SheepTester/htmlifier/releases/download/v1.0.0/htmlifier-offline.html">下载</a>)
+    </h3>
+    <ul>
+      <li>
+        为了支持在<a href="https://nodejs.org/en/">Node</a>和<a
+          href="https://deno.land/">Deno</a>中使用HTMLifier，我重写了HTMLifier，现在可以通过编程方式使用它（<a
+          href="https://github.com/SheepTester/htmlifier/issues/27">通过请求</a>）。这可能意味着可能存在许多错误。
+      </li>
+      <li>
+        我还在<a href="https://reactjs.org/">React</a>中重新制作了选项区域，并在此过程中重新定义了一些选项。
+      </li>
+      <li>
+        当您下载为ZIP文件时，Scratch引擎将存储在单独的文件（<code>vm.js</code>）中，因此您可以使多个HTMLified项目共享相同的Scratch引擎文件，以避免浪费磁盘空间（通过请求）。
+      </li>
+      <li>现在可以将.sb2文件下载为ZIP。</li>
+      <li>
+        <code>ctrl</code>/<code>⌘</code> + <code>F</code>现在可以切换全屏显示（<a
+          href="https://scratch.mit.edu/users/Sheep_maker/#comments-141217533">通过请求</a>）。
+      </li>
+      <li>
+        加载图像现在出现在背景图像之前（通过请求）。
+      </li>
+      <li>
+        您可以通过执行<code>&lt;key (join [HTMLifier] []) pressed?&gt;</code>来检测项目是否已进行了HTMLify操作（<a
+          href="https://scratch.mit.edu/users/Sheep_maker/#comments-129186942">通过请求</a>）。
+      </li>
+      <li>
+        现在可以添加多个非官方扩展（<a href="https://scratch.mit.edu/users/Sheep_maker/#comments-123224516">通过请求</a>）。
+      </li>
+      <li>
+        您可以向HTML中添加自定义JavaScript（在<a
+          href="https://sheeptester.github.io/scratch-gui/">E羊icques</a>中称为"插件"）。您还可以上传JavaScript文件，而不仅仅是粘贴URL来添加扩展和插件（通过请求）。
+      </li>
+      <li>
+        添加了一个选项，显示一个按钮，可将当前变量和列表值存储在项目中进行下载（<a
+          href="https://scratch.mit.edu/users/Sheep_maker/#comments-126598941">通过请求</a>）。这可用于保存游戏进度。
+      </li>
+      <li>
+        添加了一个选项，允许您选择一个Scratch角色添加到项目中（<a
+          href="https://scratch.mit.edu/users/Sheep_maker/#comments-120920668">通过请求</a>）。这可用于某些操作系统项目，以添加新的应用程序，其中每个应用程序都是一个角色。
+      </li>
+      <li>列表监视器现在显示项目编号。</li>
+      <li>
+        加载条现在显示百分比，而不是分数（<a href="https://scratch.mit.edu/users/Sheep_maker/#comments-120295599">通过请求</a>）。
+      </li>
+      <li>
+        禁用角色限制已与禁用克隆/列表等限制分开。
+      </li>
+    </ul>
+    <details>
+      <summary>过去的更新</summary>
+      <h3>
+        2021-03-16 (<a
+          href="https://github.com/SheepTester/htmlifier/releases/download/2021-03-16/htmlifier-offline.html">下载</a>)
+      </h3>
+      <ul>
+        <li>
+          新增云行为:
+          <ul>
+            <li>
+              <code>☁ url</code> 包含当前网页的URL。
+            </li>
+            <li>
+              <code>☁ pasted</code> 包含用户最后粘贴的文本。
+            </li>
+            <li>
+              <code>☁ username</code> 设置时，会更改“用户名”块的报告。
+            </li>
+          </ul>
+        </li>
+        <li>修复全屏模式下背景图片无法显示的问题。</li>
+        <li>修复加载图像下方显示进度条的问题。</li>
+      </ul>
+      <h3>
+        2021-02-07 (<a
+          href="https://github.com/SheepTester/htmlifier/releases/download/2021-02-07/htmlifier-offline.html">下载</a>)
+      </h3>
+      <ul>
+        <li>在URL中保存选项。</li>
+        <li>
+          新的自定义选项:
+          <ul>
+            <li>背景图片</li>
+            <li>光标</li>
+            <li>网站图标</li>
+            <li>新的加载条设计，可自定义颜色</li>
+            <li>
+              加载屏幕图像来自URL
+              <ul>
+                <li>仅拉伸加载屏幕图像的选项</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>
+          显示开始/停止按钮的选项（相当于绿色旗帜/停止标志）
+        </li>
+        <li>
+          新的特殊云行为：
+          <ul>
+            <li>更好地支持返回 Promise 的 <code>☁ eval</code></li>
+            <li><code>☁ open link</code> 在新标签页中打开 URL。</li>
+            <li><code>☁ redirect</code> 重定向到一个URL。</li>
+            <li>
+              <code>☁ set clipboard</code> 尝试将文本复制到剪贴板中。
+            </li>
+            <li>
+              <code>☁ set server ip</code> 更改云服务器地址。
+            </li>
+          </ul>
+        </li>
+        <ul>
+          <li>使用<code>&lt;key (join [code_ShiftLeft] []) pressed?&gt;</code>可以区分左右修饰键。</li>
+          <li>点击变量滑块不再使其得到焦点，因此键盘仍然可以使用。</li>
+          <li>书签小工具创建器。</li>
+          <li>重要更新：现在将鼠标锁定位置设置为累积的鼠标位置，这样更可靠。最好与“移除限制”选项一起使用。</li>
+          <li>由<a href="https://scratch.mit.edu/users/mrcringekidyt/">Mr. Cringe Kid</a>更新的CSS。</li>
+          <li>修复了HTML化日志进度未重置的问题。</li>
+          <li>同时，<a href="https://github.com/SheepTester/primitive-cloud-server">原始云服务器</a>已经更新。</li>
+        </ul>
+        <h3>2020-12-18</h3>
+        <ul>
+          <li>
+            现在可以使用<code>&lt;key (join [MouseN] []) pressed?&gt;</code>来检测特定的鼠标按钮，其中<code>N</code>可以是1表示左键点击，2表示中键点击，3表示右键点击，0表示触摸/笔。
+          </li>
+          <li>修复了使用位图造型的Scratch 2.0项目无法工作的问题。</li>
+        </ul>
+        <h3>2020-06-13 (<a
+            href="https://github.com/SheepTester/htmlifier/releases/download/2020-06-13/htmlifier-offline.html">下载</a>)
+        </h3>
+        <ul>
+          <li>更多的选项来样式化变量/列表监视器。</li>
+          <li>生成文件的.zip选项。</li>
+          <li>预览HTML化项目的选项。</li>
+          <li>尽管需求不大，但重新添加了进度计数器选项。</li>
+          <li>警告如果一个文件可能太大无法进行JavaScript到HTML化。</li>
+          <li>修复了HTML化2.0项目的问题。</li>
+        </ul>
+        <h3>2020-06-01 (<a
+            href="https://github.com/SheepTester/htmlifier/releases/download/2020-06-01/htmlifier-offline.html">下载</a>)
+        </h3>
+        <ul>
+          <li>删除克隆/列表长度限制的选项。</li>
+          <li>隐藏光标的选项。</li>
+          <li>区分localStorage和服务器的云变量（并使用云变量运行JavaScript）。</li>
+          <li>简易指针锁定选项。</li>
+          <li>修复了鼠标位置和未调整大小的列表不显示的问题。</li>
+          <li>将默认项目更改为<a href="https://scratch.mit.edu/users/ScratchCat/">ScratchCat</a>的一个项目。</li>
+          <li>不幸地，作为这些更改的一部分，我删除了进度条选项。如果需要，我会尝试重新添加。</li>
+        </ul>
+        <h3>2020-05-01</h3>
+        <ul>
+          <li>支持从URL加载自定义扩展。</li>
+          <li><a href="https://scratch.mit.edu/users/mrcringekidyt/">Mr. Cringe Kid</a>设计的CSS。</li>
+        </ul>
+        <h3>2020-03-29 (<a
+            href="https://github.com/SheepTester/words-go-here/releases/download/htmlifier-2020-03-29/htmlifier-offline.html">下载</a>)
+        </h3>
+        <ul>
+          <li>修复了自定义舞台尺寸的问题。</li>
+        </ul>
+        <h3>2020-03-27</h3>
+        <ul>
+          <li>加载时显示图像，例如gif。</li>
+          <li>修复了拖动精灵模拟另一个绿旗点击的问题。</li>
+        </ul>
+        <h3>2020-01-06</h3>
+        <ul>
+          <li>HTMLifier的离线版本。</li>
+        </ul>
+        <h3>2019-12-25</h3>
+        <ul>
+          <li>使用自定义云服务器替代localStorage保存云变量的选项。</li>
+        </ul>
+        <h3>2019-11-23</h3>
+        <ul>
+          <li>全屏按钮。</li>
+          <li>更改监视器颜色的选项。</li>
+        </ul>
+        <h3>2019-10-05</h3>
+        <ul>
+          <li>新的询问框。</li>
+        </ul>
+        <h3>2019-09-28</h3>
+        <ul>
+          <li>显示已加载资源的状态文本。</li>
+          <li>支持视频扩展。</li>
+          <li>支持可拖动的精灵。</li>
+        </ul>
+        <h3>2019-08-08</h3>
+        <ul>
+          <li>为了谨慎起见，从名称中删除了“Scratch”。</li>
+        </ul>
+        <h3>2019-07-27</h3>
+        <ul>
+          <li>支持16:9项目。</li>
+          <li>简化了HTML化模式的选项数量。</li>
+        </ul>
+        <h3>2019-07-13</h3>
+        <ul>
+          <li>将云变量保存在localStorage中。</li>
+        </ul>
+        <h3>2019-06-29</h3>
+        <ul>
+          <li>上传项目文件而不是使用项目ID。</li>
+          <li>切换兼容性和加速模式。</li>
+        </ul>
+        <h3>2019-03-31</h3>
+        <ul>
+          <li>变量和列表监视器。</li>
+        </ul>
+        <h3>2019-02-09</h3>
+        <ul>
+          <li>项目开始。</li>
+        </ul>
+    </details>
+    <h2 id="credits">制作人员</h2>
+    <p>
+      由<a href="https://scratch.mit.edu/users/Sheep_maker/">Sheep_maker</a>制作，
+      他使用了<a href="https://github.com/LLK/scratch-vm/">scratch-vm</a>、
+      <a href="https://stuk.github.io/jszip/">JSZip</a>、
+      <a href="https://deno.land/">Deno</a>、
+      <a href="https://reactjs.org/">React</a>及其相关依赖项。
+    </p>
+    <p>
+      CSS由<a href="https://scratch.mit.edu/users/mrcringekidyt/">Mr. Cringe Kid</a>制作。
+    </p>
+    <h2 id="see-also">另请参阅</h2>
+    <p>
+      根据您的使用情况，HTMLifier可能不是最适合您的选项。 HTMLifier通过几乎使用与vanilla Scratch相同的引擎来优先考虑准确性，但牺牲了速度和可编辑性。
+    </p>
+    <p>
+      如果您想要更好的性能，请将项目编译为JavaScript：
+      <a href="https://phosphorus.github.io/">Phosphorus</a>（仅适用于Scratch 2.0），<a
+        href="https://forkphorus.github.io/">Forkphorus</a>和<a href="https://turbowarp.org/">TurboWarp</a>。
+    </p>
+    <p>
+      如果您想学习JavaScript，请使用<a href="https://leopardjs.now.sh/">Leopard</a>将Scratch块转换为JavaScript中的相似块。
+    </p>
+  </div>
+  <script src="./index.bundle.min.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    var errorsTextarea = document.getElementById('errors')
+    if (!window.onNewError) {
+      window.onNewError = function () {
+        errorsTextarea.value =
+          window.errors.length + ' errors(s)\n' + window.errors.join('\n')
+      }
+      window.onNewError()
+    }
+    try {
+      eval('0 ?? 0')
+    } catch (_) {
+      var oldBrowserNotice = document.getElementById('no-nullish-coalescing')
+      oldBrowserNotice.className = ''
+    }
+    var hasJs = document.getElementById('js-enabled')
+    if (hasJs) {
+      hasJs.classList.remove('hidden')
+    }
+  </script>
+</body>
+
+</html>
