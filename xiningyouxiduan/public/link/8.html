@@ -1,0 +1,59 @@
+<!--
+ * @Author: xixi_
+ * @Date: 2024-11-11 18:57:37
+ * @LastEditors: xixi_
+ * @LastEditTime: 2024-11-11 19:54:10
+ * @FilePath: /opennessgames.github.io/xiningyouxiduan/public/link/8.html
+ * Copyright (c) 2020-2024 by xixi_ , All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开源许可协议</title>
+    <script src="../js/marked.min.js"></script>
+    <link rel="stylesheet" href="../css/github-markdown-light.min.css">
+    <style>
+        @media (max-width: 767px) {
+            body {
+                padding: 15px;
+            }
+        }
+
+        body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 协议内容 -->
+    <div id="License">
+
+    </div>
+    <script>
+        // document.getElementById('License').innerHTML = marked.parse('开源许可协议');
+
+        // 读取外部 Markdown 文件并解析显示
+        fetch('../md/License.md')
+            .then(response => response.text())
+            .then(markdownContent => {
+                // 使用 marked 解析 markdown 内容
+                const htmlContent = marked.parse(markdownContent);
+                // 将解析后的 HTML 插入到 #License div 中
+                document.getElementById('License').innerHTML = htmlContent;
+            })
+            .catch(error => {
+                console.error('读取 Markdown 文件失败:', error);
+                document.getElementById('License').innerHTML = '无法加载协议内容。';
+            });
+    </script>
+</body>
+
+</html>

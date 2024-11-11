@@ -1,42 +1,135 @@
 <!--
  * @Author: xixi_
- * @Date: 2024-11-04 19:31:02
+ * @Date: 2024-11-04 20:24:16
  * @LastEditors: xixi_
- * @LastEditTime: 2024-11-04 20:23:40
+ * @LastEditTime: 2024-11-07 19:25:42
  * @FilePath: /opennessgames.github.io/xiningyouxiduan/public/link/7.html
- * Copyright (c) 2023-2024 by xixi_ , All Rights Reserved. 
+ * Copyright (c) 2020-2024 by xixi_ , All Rights Reserved. 
 -->
-<!DOCTYPE HTML>
+<!--
+	FileName : index.html
+	By : yzx
+	MakeTime : 2023年9月3日 下午 12:34:06
+	Copyright (C) 2024-2025 openGames 
+-->
+<!DOCTYPE html>
 <html>
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <link rel="stylesheet" href="../css/sptx.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="keywords" content="万祯官网,熙柠游戏,熙柠游戏端,,万祯小游戏,万祯在线游戏,小游戏,在线游戏,万祯,openGames">
+	<meta name="description" content=" ">
+	<title>熙柠游戏端停服</title>
+	<link rel="icon" href="ico/favicon.ico" type="image/x-icon">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: #f2f2f2;
+			font-family: Arial, sans-serif;
+			font-size: 16px;
+			line-height: 1.6;
+			color: #333;
+		}
+
+		.container {
+			max-width: 800px;
+			margin: 20px auto;
+			padding: 40px;
+			background-color: #fff;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			border-radius: 8px;
+			text-align: left;
+			/* 原来是居中,改成左边 */
+			position: relative;
+		}
+
+		h1 {
+			margin-top: 0;
+			font-size: 28px;
+			color: #007bff;
+		}
+
+		p {
+			margin: 15px 0;
+			font-size: 18px;
+			line-height: 1.6;
+		}
+
+		a {
+			color: #007bff;
+			text-decoration: none;
+			font-weight: bold;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+
+		.company-info {
+			position: fixed;
+			bottom: 10px;
+			right: 10px;
+			font-size: 12px;
+			color: #999;
+		}
+
+		.time {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			width: 200px;
+			height: auto;
+			text-align: left;
+			/* 原来是右,改成左 */
+			font-size: 14px;
+			color: #666;
+		}
+	</style>
 </head>
 
 <body>
-  <section class="main">
-    <div class="box">
+	<div class="container">
+		<h1>焯焯工具板块维护升级通知</h1>
+		<p>尊敬的用户：为了提供更优质的服务，我们将在以下时间进行网站工具板块的维护和升级.</p>
+		<p><strong>维护时间：</strong></p>
+		<p>开始时间：2024年11月4日 20:24:16</p>
+		<p>结束时间（预计）：2024年11月10日 11:45:14</p>
+		<p>在此期间，网站工具板块将暂时无法使用。我们建议您提前完成相关操作，以免影响您的使用体验。感谢您的理解与支持！如有任何问题，请随时联系我们的客服团队。祝您生活愉快！</p>
+		<div class="time">
+			<p>openGames</p>
+			<p>2024年11月4日 20:45:14</p>
+		</div>
+	</div>
 
-      <div>
-        <a target="right" href="../Tool/1/index.html">
-          <div class="item">
-            <div class="logo">
-              <img src="../images/t1.png" alt=" Coding">Scratch转Html普通版
-            </div>
-            <div class="desc">
-              此工具可以将您的Scratch作品转换为html，转换速度很快，支持sb/sb2/sb3格式
-            </div>
-          </div>
-        </a>
-      </div>
+	<div class="company-info">
+		<p>万祯公司 - 版权所有</p>
+		<p id="current-time"></p>
+	</div>
 
-      <div class="box">
-      </div>
-    </div>
+	<script>
+		function getCurrentTime() {
+			var date = new Date();
+			var hours = date.getHours();
+			var minutes = date.getMinutes();
+			var seconds = date.getSeconds();
 
-  </section>
+			hours = (hours < 10 ? "0" : "") + hours;
+			minutes = (minutes < 10 ? "0" : "") + minutes;
+			seconds = (seconds < 10 ? "0" : "") + seconds;
+
+			var timeString = hours + ":" + minutes + ":" + seconds;
+
+			document.getElementById("current-time").textContent = "当前时间：" + timeString;
+
+			setTimeout(getCurrentTime, 1000); // 每秒钟更新一次时间
+		}
+
+		getCurrentTime();
+	</script>
 </body>
 
 </html>
