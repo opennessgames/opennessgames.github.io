@@ -1,5 +1,13 @@
-// 创建 Date 对象
-var today = new Date();
+/*
+ * @Author: xixi_
+ * @Date: 2024-11-04 19:31:13
+ * @LastEditors: xixi_
+ * @LastEditTime: 2024-11-13 20:10:02
+ * @FilePath: /opennessgames.github.io/xiningyouxiduan/public/js/date.js
+ * Copyright (c) 2020-2024 by xixi_ , All Rights Reserved. 
+ */
+
+var today = new Date();/* 获取现在的日期 */
 
 // 获取年、月、日
 var year = today.getFullYear();
@@ -46,7 +54,3 @@ console.log(output);
 var dateElement = document.querySelector('.date');
 // 更改文本内容
 dateElement.textContent = output;
-
-/*该代码根据当前日期获取到年、月、日和星期几。然后通过计算当天与本年第一天之间的天数得出今年已经过去的天数。之后，我们使用 `new Date(currentYear, 12, 0).getDate()` 计算今年的总天数，其中月份 12 表示下一年的第一个月，日期 0 表示取上一个月的最后一天。接着我们计算百分比并构造输出字符串。最后，使用 `console.log(output)` 输出结果。
-
-请注意，在计算今年的总天数时，我们使用了 `12` 来表示下一年的第一个月，这是因为 JavaScript 中月份是从 0 到 11 编号的。同时，得到的百分比保留了两位小数，并用 `toFixed(2)` 方法来实现。*/
