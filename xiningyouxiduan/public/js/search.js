@@ -1,14 +1,3 @@
-function check(data) {
-	var checkradio = document.getElementsByName("tool");
-	var choose = 0; //choose为radio中选中的值
-	for (var i = 0; i < checkradio.length; i++) {
-		if (checkradio[i].checked) {
-			choose = checkradio[i].value;
-			alert("搭建中，马上就来！")
-		}
-	}
-}
-
 window.onload = function () {
 	var data = {
 		"specialty": [
