@@ -1,0 +1,120 @@
+<!--
+ * @Author: xixi_
+ * @Date: 2024-11-02 11:20:49
+ * @LastEditors: xixi_
+ * @LastEditTime: 2024-12-07 15:26:49
+ * @FilePath: /opennessgames.github.io/document/wiki/mini/index.html
+ * Copyright (c) 2023-2024 by xixi_ , All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>迷你世界API文档-ThisDoc</title>
+    <link rel="stylesheet" href="./css/default.min.css">
+    <script src="./js/highlight.js/11.6.0/highlight.min.js"></script>
+    <style>
+        * {
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .ThisTitles{
+            width: 100%;
+            height: 10%;
+            background-color: #8c2bdba6;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .code-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 5px;
+            overflow: auto;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #61afef;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .language-label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="ThisTitles">ThisDoc</h1>
+    <h1>Lua 代码示例</h1>
+
+    <div class="code-container">
+        <span class="language-label">Lua</span>
+        <button class="copy-button" onclick="copyToClipboard('print(&quot;Hello, world!&quot;);')">复制</button>
+        <pre>
+            <code class="language-lua">
+                print("Hello, world!");
+            </code>
+        </pre>
+    </div>
+
+    <h1>C 代码示例</h1>
+    <div class="code-container">
+        <span class="language-label">C</span>
+        <button class="copy-button"
+            onclick="copyToClipboard('#include &lt;stdio.h&gt;\n\nint main() {\n    printf(&quot;Hello, world!&quot;\\n);\n    return 0;\n}')">复制</button>
+        <pre>
+<code class="language-c">
+#include <stdio.h>
+
+int main() {
+    printf("Hello, world!\n");
+    return 0;
+}
+</code>
+</pre>
+    </div>
+
+    <script>
+        hljs.highlightAll();
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('代码已复制到剪贴板');
+        }
+    </script>
+
+</body>
+
+</html>

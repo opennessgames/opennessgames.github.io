@@ -1,0 +1,66 @@
+<!--
+ * @Author: xixi_
+ * @Date: 2024-12-07 15:10:15
+ * @LastEditors: xixi_
+ * @LastEditTime: 2024-12-07 16:09:31
+ * @FilePath: /opennessgames.github.io/document/wiki/xixi/doc/Stack.html
+ * Copyright (c) 2020-2024 by xixi_ , All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <title>栈</title>
+    <link href="/css/codestyle.css" type="text/css" rel="stylesheet" />
+    <link href="/lib/prismjs@1.24.1/themes/prism.css" rel="stylesheet" />
+    <script src="/lib/prismjs@1.24.1/prism.js"></script>
+</head>
+
+<body>
+    <div class="XMain">
+        <h1>头文件</h1>
+        <div class="code-container">
+            <span class="language-label">C</span>
+            <pre><code class="language-c">#include &lt;xixi/Stack/Stack.h&gt;</code></pre>
+        </div>
+        <h1>函数列表</h1>
+        <div class="code-container">
+            <span class="language-label">C</span>
+            <pre><code class="language-c">void XIXI_StackInit(ThisStack *ThisStack);/* 初始化栈 */        
+int XIXI_StackIsEmpty(ThisStack *ThisStack);/* 判定栈是否为空 */
+int XIXI_StackPush(ThisStack *ThisStack, const char *ThisVal);/* 将字符推入栈 */
+int XIXI_StackAppendVal(ThisStack *ThisStack, const char *ThisVal);/* 在栈顶追加字符 */
+char *XIXI_StackPop(ThisStack *ThisStack);/* 将字符弹出栈 */
+char *XIXI_StackPeek(ThisStack *ThisStack);/* 查看栈顶的元素 */
+void XIXI_StackPrint(ThisStack *ThisStack);/* 打印栈中的元素 */
+void XIXI_StackFree(ThisStack *ThisStack);/* 释放栈 */</code></pre>
+        </div>
+        <h1>实例</h1>
+        <div class="code-container">
+            <span class="language-label">C</span>
+            <pre><code class="language-c">#include &lt;xixi/Stack/Stack.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    ThisStack s;                     /* 创建一个栈实例 */
+    XIXI_StackInit(&s);              /* 初始化 */
+    XIXI_StackPush(&s, "TestToken"); /* 推入 */
+    XIXI_StackPush(&s, "TestToken");
+    XIXI_StackAppendVal(&s, "0");    /* 追加 */
+    XIXI_StackPush(&s, "TestToken"); /* 推入 */
+    free(XIXI_StackPop(&s));         /* 弹出栈顶字符 */
+    XIXI_StackPrint(&s);             /* 打印栈 */
+    XIXI_StackFree(&s);              /* 释放栈 */
+    return 0;
+}</code></pre>
+        </div>
+        <div>
+            <h1>运行上面实例,输出</h1>
+            <pre><code class="language-c">└─$ ./Stack
+TestToken
+TestToken0</code></pre>
+        </div>
+    </div>
+</body>
+
+</html>
