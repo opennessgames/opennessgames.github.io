@@ -1,0 +1,14 @@
+.code-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.language-label {
+    position: absolute;
+    top: 0px;
+    left: 98.6%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
