@@ -1,0 +1,193 @@
+<!--
+ * @Author: xixi_
+ * @Date: 2024-12-07 15:10:15
+ * @LastEditors: xixi_
+ * @LastEditTime: 2024-12-08 11:49:48
+ * @FilePath: /opennessgames.github.io/document/wiki/mini/doc/case/2048.html
+ * Copyright (c) 2020-2024 by xixi_ , All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048游戏案例</title>
+    <link href="/css/codestyle.css" type="text/css" rel="stylesheet" />
+    <link href="/lib/prismjs@1.24.1/themes/prism.css" rel="stylesheet" />
+    <script src="/lib/prismjs@1.24.1/prism.js"></script>
+</head>
+
+<body>
+    <div class="XMain">
+        <h1>2048游戏案例</h1>
+        <div class="code-container">
+            <span class="language-label">C</span>
+            <pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;signal.h&gt;
+
+/*
+ * @Author: xixi_
+ * @Date: 2024-10-27 14:51:02
+ * @LastEditors: xixi_
+ * @LastEditTime: 2024-12-02 18:57:44
+ * @FilePath: /FHMF/src/Modules/xixi/src/2048Gen/2048Gen.c
+ * Copyright (c) 2020-2024 by xixi_ , All Rights Reserved.
+ */
+/*
+    2048 一维数组版 - Gen版本
+    Gen版本指经过精简和优化的代码版本，旨在通过最少的循环次数实现核心业务逻辑，同时保持一定的可读性和扩展性。
+    这是全网最精简的2048游戏算法，经过极致优化，采用索引数组来处理游戏数据。与传统实现（需要四个移动函数）相比，
+    Gen版本去除了大量复杂的逻辑，仅使用三个核心函数和一个辅助函数，总共只需五个循环。每轮合并操作最多只需要20次循环，
+    即可完成一次完整的合并操作，极大提升了效率。该版本有效减少了代码量和循环次数，保证了性能和可维护性。
+    希望你能享受这款简洁高效的2048游戏！祝你玩得愉快ヾ(•ω•`)o
+*/
+/*
+    开发时间记录：
+    2024-10-27 14:51:02 开始开发
+    2024-11-20 15:34:26 完善了所有API
+*/
+
+int QuickIndex[64] = {
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, /* 左 */
+    12, 8, 4, 0, 13, 9, 5, 1, 14, 10, 6, 2, 15, 11, 7, 3, /* 下 */
+    3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12, /* 右 */
+    0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15  /* 上 */
+}; /* 四方向快速索引数组,仅适用于`4*4`尺寸 */
+
+void Print1DTable(int *Grid)
+{
+    for (int i = 0; i &lt; 16; i++)
+    {
+        printf("%4d ", Grid[i]);
+        if ((i + 1) % 4 == 0)
+        {
+            printf("\n");
+        }
+    }
+}
+
+void XIXI_2048GenAddRandomNum(int *Grid)
+{
+    int EmptyIndices[16] = {0}; /* 空索引列表 */
+    int EmptyCont = 0;          /* 空索引总数 */
+    for (int i = 0; i &lt; 16; i++)
+    {
+        if (Grid[i] == 0)
+        {
+            EmptyIndices[EmptyCont++] = i;
+        }
+    }
+    if (EmptyCont &gt; 0) /* 如果存在空格 */
+    {
+        int SelectedIndex = EmptyIndices[rand() % EmptyCont]; /* 随机获取空索引 */
+        Grid[SelectedIndex] = (rand() % 10 &lt; 3) ? 4 : 2;      /* 70%几率生成2,30%几率生成4 */
+    }
+}
+
+bool XIXI_2048GenCombineTiles(int *Tiles, int *NewTiles)
+{
+    int Index = 0; /* 用于跟踪新表中的下一个插入位置 */
+    bool CanMove = false;
+    bool MergedMark[4] = {false};
+    for (int i = 0; i &lt; 4; i++)
+    {
+        if (Tiles[i] != 0) /* 如果当前格子不为空 */
+        {
+            if (Index &gt; 0 && NewTiles[Index - 1] == Tiles[i] && !MergedMark[Index - 1])
+            {
+                NewTiles[Index - 1] *= 2;     /* 合并 */
+                MergedMark[Index - 1] = true; /* 标记已合并 */
+                CanMove = true;               /* 标记可移动 */
+            }
+            else
+            {
+                NewTiles[Index++] = Tiles[i]; /* 将当前数字放入新表并移动到下一个插入的位置 */
+            }
+        }
+        else
+        {
+            CanMove = true; /* 发现0值,标记可移动 */
+        }
+    }
+    return CanMove; /* 返回移动标志 */
+}
+
+void XIXI_2048GenMove(int *Grid, int Direction)
+{
+    bool HasMoved = false; /* 标记是否发生过移动 */
+    for (int i = 0; i &lt; 4; i++)
+    {
+        int Index = Direction * 16 + i * 4 + 3;                                                                   /* 计算当前处理的方块组的起始索引 */
+        int Titles[4] = {Grid[QuickIndex[Index - 3]], Grid[QuickIndex[Index - 2]], Grid[QuickIndex[Index - 1]], Grid[QuickIndex[Index]]}; /* 拿到当前行/列 */
+        int NewTiles[4] = {0};                                                                                    /* 初始化新表 */
+        bool CanMove = XIXI_2048GenCombineTiles(Titles, NewTiles);                                                /* 合并方块并获取新状态 */
+        if (CanMove)                                                                                              /* 如果可以移动或合并 */
+        {
+            for (int j = 0; j &lt; 4; j++)
+            {
+                Grid[QuickIndex[Index + j - 3]] = NewTiles[j]; /* 更新网格中的方块 */
+            }
+            HasMoved = true; /* 标记发生过移动 */
+        }
+    }
+    if (!HasMoved)
+    {
+        printf("当前方向无法移动哦~\n");
+    }
+    else
+    {
+        XIXI_2048GenAddRandomNum(Grid); /* 可移动,随机刷新2/4 */
+    }
+}
+
+void XIXI_2048GenExitSignal(int signal)
+{
+    printf("\033[H\033[J"); /* 清屏 */
+    exit(0);
+}
+
+int DirMap[4][3] = {
+    {'W', 'w', 3},
+    {'A', 'a', 0},
+    {'S', 's', 1},
+    {'D', 'd', 2},
+}; /* 方向索引映射 */
+
+int main(int argc, char *argv[], char *envp[])
+{
+    signal(SIGINT, XIXI_2048GenExitSignal);                 /* 处理 Ctrl+C */
+    signal(SIGTSTP, XIXI_2048GenExitSignal);                /* 处理 Ctrl+Z */
+    int GameBoard[16] = {0};                       /* 棋盘状态 */
+    int DirMapSize = sizeof(DirMap) / (4 * 4) + 1; /* 获取映射表大小 */
+    char DirectionInput = '\0';                    /* 输入方向 */
+    XIXI_2048GenAddRandomNum(GameBoard);           /* 随机添加一个数字 */
+    while (true)
+    {
+        printf("\033[H\033[J");  /* 清屏 */
+        Print1DTable(GameBoard); /* 打印当前棋盘状态 */
+        printf("请输入移动方向 (W: 上, A: 左, S: 下, D: 右 Q: 退出): ");
+        scanf(" %c", &DirectionInput); /* 读取用户输入，跳过前导空白字符 */
+        for (int i = 0; i &lt; DirMapSize; i++)
+        {
+            if (DirMap[i][0] == DirectionInput || DirMap[i][1] == DirectionInput)
+            {
+                XIXI_2048GenMove(GameBoard, DirMap[i][2]);
+                break;
+            }
+        }
+        if (DirectionInput == 'q' || DirectionInput == 'Q')
+        {
+            exit(0);
+        }
+    }
+}</code></pre>
+        </div>
+    </div>
+</body>
+
+</html>
+
+
