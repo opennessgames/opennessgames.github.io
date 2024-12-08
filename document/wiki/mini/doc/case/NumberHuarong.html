@@ -1,0 +1,155 @@
+<!--
+ * @Author: xixi_
+ * @Date: 2024-12-08 23:30:14
+ * @LastEditors: xixi_
+ * @LastEditTime: 2024-12-08 23:46:47
+ * @FilePath: /opennessgames.github.io/document/wiki/mini/doc/case/NumberHuarong.html
+ * Copyright (c) 2020-2024 by xixi_ , All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数字华容道案例</title>
+    <link href="/css/codestyle.css" type="text/css" rel="stylesheet" />
+    <link href="/lib/prismjs@1.24.1/themes/prism.css" rel="stylesheet" />
+    <script src="/lib/prismjs@1.24.1/prism.js"></script>
+</head>
+
+<body>
+    <div class="XMain">
+        <h1>数字华容道</h1>
+        <div class="code-container">
+            <span class="language-label">Lua</span>
+            <pre><code class="language-lua">--[[
+Author: xixi_
+Date: 2024-10-28 00:22:16
+LastEditors: xixi_
+LastEditTime: 2024-10-28 01:00:19
+FilePath: /FHMF/src/Modules/xixi/src/NumberHuarong/NumberHuarong1D.lua
+Copyright (c) 2023-2024 by xixi_ , All Rights Reserved.
+--]]
+--[[
+更新日志:
+    2023年08月09日 07:08:11 发布第一个版本
+    2023年08月08日 15:00:19 性能优化，将循环次数从17个减少至11个
+    2023年10月01日 20:39:57 更新为图形化版本
+    2024年10月28日 01:00:19 再次优化性能，将循环次数从11个减少至8个
+ ]]
+--[[
+    华容道一维数组版,仅需4个核心函数,2个辅助函数,1个主函数实现完整的功能
+    随机生成一个数字华容道游戏的布局，大小在3x3到10x10之间（通过size参数设置）。
+    生成的布局会保证有解。玩家可以使用"W"、"A"、"S"、"D"键来控制数字格子的移动方向。游戏结束条件是成功还原布局。
+    请确保在 Lua 环境中运行以上代码，并按照提示进行操作。希望这个游戏能给你带来乐趣ヾ(•ω•`)o
+]]
+--------------------------------------------------------------------------------------------------------------------------
+--[[ 计算逆序数 ]]
+local function XIXI_HuarongGenCountInversions(Grid, Size)
+    local Inversions = 0;
+    for i = 0, Size - 1, 1 do
+        if (Grid[i] ~= 0) then
+            for j = i + 1, Size - 1 do
+                Inversions = Inversions + (Grid[j] ~= 0 and Grid[i] &gt; Grid[j] and 1 or 0);
+            end
+        end
+    end
+    return Inversions;
+end
+--------------------------------------------------------------------------------------------------------------------------
+--[[ 初始化华容道并确保可解 ]]
+local function XIXI_HuarongGenInit(Grid, Size)
+    for i = 0, Size - 1, 1 do
+        Grid[i] = i;
+    end
+    repeat --[[ 打乱数组 ]]
+        for i = Size - 1, 1, -1 do
+            local j = math.random(0, i);
+            Grid[i], Grid[j] = Grid[j], Grid[i];
+        end
+    until (XIXI_HuarongGenCountInversions(Grid, Size) % 2 == 0); --[[ 确保生成的棋盘可解 ]]
+end
+--------------------------------------------------------------------------------------------------------------------------
+--[[ 显示华容道 ]]
+local function Print1DTable(Grid, Size)
+    for i = 0, Size - 1, 1 do
+        io.write((Grid[i] == 0) and " _ " or string.format("%2d ", Grid[i]));
+        if ((i + 1) % math.sqrt(Size) == 0) then
+            io.write("\n");
+        end
+    end
+end
+--------------------------------------------------------------------------------------------------------------------------
+--[[ 检查是否胜利 ]]
+local function XIXI_HuarongGenIsWin(Grid, Size)
+    for i = 1, Size - 1, 1 do
+        if (Grid[i - 1] ~= i) then
+            return false;
+        end
+    end
+    return Grid[Size - 1] == 0; --[[ 最后一个是否为0 ]]
+end
+--------------------------------------------------------------------------------------------------------------------------
+--[[ 初始化映射表 ]]
+local function XIXI_HuarongGenInitMap(Map, Size)
+    Map["w"] = math.sqrt(Size); --[[ 这个映射表方案是突然想出来的 ]]
+    Map["s"] = -math.sqrt(Size);
+    Map["a"] = 1;
+    Map["d"] = -1;
+end
+--------------------------------------------------------------------------------------------------------------------------
+--[[ 移动数字 ]]
+local function XIXI_HuarongGenMove(Grid, Size, Direction, Map)
+    local ZeroIndex = 0; --[[ 0的索引 ]]
+    for i = 0, Size - 1, 1 do
+        if (Grid[i] == 0) then
+            ZeroIndex = i; --[[ 获取0的索引 ]]
+            break;
+        end
+    end
+    local TargetIndex = ZeroIndex;
+    TargetIndex = ZeroIndex + Map[Direction]; --[[ 目标索引 ]]
+    if ((Direction == "w" and TargetIndex &gt;= Size) or --[[ 越界判定 ]]
+            (Direction == "s" and TargetIndex &lt; 0) or
+            (Direction == "a" and (TargetIndex % math.sqrt(Size) == 0)) or
+            (Direction == "d" and (ZeroIndex % math.sqrt(Size) == 0))) then
+        print("Invalid move!");
+        return;
+    end
+    Grid[ZeroIndex], Grid[TargetIndex] = Grid[TargetIndex], Grid[ZeroIndex]; --[[ 交换 ]]
+end
+--------------------------------------------------------------------------------------------------------------------------
+--[[ 主函数 ]]
+local function main()
+    local Grid = {};
+    local Map = {};
+    local Size = 4 * 4; --[[ 棋盘大小 ]]
+    XIXI_HuarongGenInitMap(Map, Size); --[[ 初始化映射表 ]]
+    XIXI_HuarongGenInit(Grid, Size); --[[ 初始化棋盘 ]]
+    while (true) do
+        os.execute("clear"); --[[ 清屏 ]]
+        Print1DTable(Grid, Size)
+        if (XIXI_HuarongGenIsWin(Grid, Size)) then --[[ 判断是否胜利 ]]
+            print("Congratulations! You've won!");
+            break;
+        end
+        print("Move (w, s, a, d):");
+        local Direction = io.read(); --[[ 获取用户输入 ]]
+        if (Direction:lower() == "q" or Direction:lower() == "exit") then break; end --[[ 退出 ]]
+        Direction = ({ W = "w", A = "a", S = "s", D = "d" })[Direction:upper()];
+        if (Direction ~= nil) then
+            XIXI_HuarongGenMove(Grid, Size, Direction, Map); --[[ 移动 ]]
+        else
+            print("Invalid input! Please enter 'w', 's', 'a', 'd', or 'q'.");
+        end
+    end
+end
+--------------------------------------------------------------------------------------------------------------------------
+main() --[[ 启动游戏 ]]</code></pre>
+        </div>
+    </div>
+</body>
+
+</html>
+

@@ -1,0 +1,147 @@
+<!--
+ * @Author: xixi_
+ * @Date: 2024-12-08 23:30:14
+ * @LastEditors: xixi_
+ * @LastEditTime: 2024-12-08 23:55:11
+ * @FilePath: /opennessgames.github.io/document/wiki/mini/doc/case/Calc.html
+ * Copyright (c) 2020-2024 by xixi_ , All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简易混合计算器案例</title>
+    <link href="/css/codestyle.css" type="text/css" rel="stylesheet" />
+    <link href="/lib/prismjs@1.24.1/themes/prism.css" rel="stylesheet" />
+    <script src="/lib/prismjs@1.24.1/prism.js"></script>
+</head>
+
+<body>
+    <div class="XMain">
+        <h1>简易混合计算器</h1>
+        <div class="code-container">
+            <span class="language-label">Lua</span>
+            <pre><code class="language-lua">--[[
+Author: xixi_
+Date: 2024-11-07 15:51:46
+LastEditors: xixi_
+LastEditTime: 2024-11-07 22:57:13
+FilePath: /FHMF/src/Modules/xixi/src/Algebra/CalcInfixToPostfix.lua
+Copyright (c) 2020-2024 by xixi_ , All Rights Reserved.
+--]]
+--[[
+    使用`#Stack + 1`代替table.insert()
+]]
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--[[ 定义运算符优先级 ]]
+local Precedence = {
+    ["+"] = 0,
+    ["-"] = 0,
+    ["*"] = 1,
+    ["/"] = 1,
+    ["^"] = 2
+};
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--[[ 判断字符是否是操作符 ]]
+local function XIXI_CalcIsOperator(c)
+    return Precedence[c] ~= nil;
+end
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--[[ 判断字符是否是数字 ]]
+local function XIXI_CalcIsNumber(c)
+    return tonumber(c) ~= nil;
+end
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--[[ 处理N重符号(同号得正,异号得负) ]]
+local function XIXI_CalcDoublePrecedence(Expression)
+    local i = 1;
+    while (i &lt; #Expression) do
+        local Token = Expression[i];
+        local NextToken = Expression[i + 1];
+        --[[ 处理符号合并 ]]
+        if ((Token == "+" and NextToken == "-") or (Token == "-" and NextToken == "+")) then
+            Expression[i] = "-"; --[[ 异号得负 ]]
+        elseif ((Token == "-" and NextToken == "-") or (Token == "+" and NextToken == "+")) then
+            Expression[i] = "+"; --[[ 同号得正 ]]
+        else
+            i = i + 1; --[[ 否则继续检查下一个 ]]
+            goto continue;
+        end
+
+        table.remove(Expression, i + 1); --[[ 删除下一个符号 ]]
+        ::continue:: --[[ 跳过当前循环后续部分 ]]
+    end
+end
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--[[ 中缀转后缀 `Shunting Yard Algorithm`算法 ]]
+local function XIXI_CalcCalcInfixToPostfix(Expression)
+    local Output = {}; --[[ 输出的后缀表达式 ]]
+    local Stack = {}; --[[ 操作符栈 ]]
+    for _, Token in ipairs(Expression) do
+        if (XIXI_CalcIsNumber(Token)) then
+            Output[#Output + 1] = Token; --[[ 如果是数字，直接加入输出 ]]
+        elseif (XIXI_CalcIsOperator(Token)) then
+            --[[ 如果是操作符，处理栈中的操作符 ]]
+            while (#Stack &gt; 0 and XIXI_CalcIsOperator(Stack[#Stack]) and Precedence[Stack[#Stack]] &gt;= Precedence[Token]) do
+                Output[#Output + 1] = table.remove(Stack); --[[ 优先级较高的操作符出栈 ]]
+            end
+            Stack[#Stack + 1] = Token; --[[ 当前操作符入栈 ]]
+        elseif (Token == "(") then
+            Stack[#Stack + 1] = Token; --[[ 左括号直接入栈 ]]
+        elseif (Token == ")") then
+            --[[ 右括号，弹出栈内所有操作符直到遇到左括号 ]]
+            while (#Stack &gt; 0 and Stack[#Stack] ~= "(") do
+                Output[#Output + 1] = table.remove(Stack);
+            end
+
+            table.remove(Stack); --[[ 弹出左括号 ]]
+        end
+    end
+    --[[ 弹出所有剩余的操作符 ]]
+    while (#Stack &gt; 0) do
+        Output[#Output + 1] = table.remove(Stack);
+    end
+    return Output;
+end
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--[[ 计算后缀表达式 ]]
+local function XIXI_CalcCalcPostfix(Expression)
+    local Stack = {};
+    for _, Token in ipairs(Expression) do
+        if (XIXI_CalcIsNumber(Token)) then --[[ 如果是数字，入栈 ]]
+            Stack[#Stack + 1] = tonumber(Token);
+        else --[[ 如果是操作符，出栈并计算 ]]
+            local b = table.remove(Stack);
+            local a = table.remove(Stack);
+
+            if (Token == "+") then
+                Stack[#Stack + 1] = a + b;
+            elseif (Token == "-") then
+                Stack[#Stack + 1] = a - b;
+            elseif (Token == "*") then
+                Stack[#Stack + 1] = a * b;
+            elseif (Token == "/") then
+                Stack[#Stack + 1] = a / b;
+            elseif (Token == "^") then
+                Stack[#Stack + 1] = a ^ b;
+            end
+        end
+    end
+    return Stack[1]; --[[ 最终栈中只有一个元素，即计算结果 ]]
+end
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--[[ 测试代码 ]]
+local Expression = { "777", "*", "(", "(", "6", ")", ")", "^", "2" };
+local Postfix = XIXI_CalcCalcInfixToPostfix(Expression);
+local Result = XIXI_CalcCalcPostfix(Postfix);
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+print("Infix Expression: " .. table.concat(Expression));
+print("Postfix Expression: " .. table.concat(Postfix, ","));
+print("Result: " .. Result);</code></pre>
+        </div>
+    </div>
+</body>
+
+</html>
