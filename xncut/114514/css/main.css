@@ -1,0 +1,12 @@
+/*
+    FileName : main.css
+    By : yzx
+    MakeTime : 2024年9月23日 下午 10:40:50
+    Copyright (C) 2024-2025 openGames 
+*/
+
+.TopBar {
+    width: 100%;
+    height: 75px;
+    background-color: slategray;
+}
